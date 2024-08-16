@@ -1,12 +1,16 @@
 package roomescape;
 
 public class Reservation {
+
     private Long id;
     private String name;
     private String date;
     private String time;
 
+
+
     public Reservation(Long id, String name, String date, String time){
+
         this.id = id;
         this.name = name;
         this.date = date;
@@ -17,6 +21,7 @@ public class Reservation {
     }
 
 
+
     public Long getId() {
         return id;
     }
@@ -25,6 +30,7 @@ public class Reservation {
         this.id = id;
     }
 
+
     public String getName() {
         return name;
     }
@@ -32,6 +38,7 @@ public class Reservation {
     public void setName(String name) {
         this.name = name;
     }
+
 
     public String getDate() {
         return date;
