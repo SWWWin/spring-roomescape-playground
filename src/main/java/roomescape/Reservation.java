@@ -5,11 +5,11 @@ public class Reservation {
     private Long id;
     private String name;
     private String date;
-    private String time;
+    private Time time;
 
 
 
-    public Reservation(Long id, String name, String date, String time){
+    public Reservation(Long id, String name, String date, Time time){
 
         this.id = id;
         this.name = name;
@@ -48,11 +48,11 @@ public class Reservation {
         this.date = date;
     }
 
-    public String getTime() {
+    public Time getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(Time time) {
         this.time = time;
     }
 }

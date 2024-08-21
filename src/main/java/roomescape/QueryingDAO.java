@@ -20,21 +20,27 @@ public class QueryingDAO {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    private final RowMapper<Reservation> reservationRowMapper = (resultSet, rowNum) ->
-            new Reservation(
-                    resultSet.getLong("id"),
-                    resultSet.getString("name"),
-                    resultSet.getString("date"),
-                    resultSet.getString("time")
-            );
+    private final RowMapper<Reservation> reservationRowMapper = (resultSet, rowNum) -> {
+        Long reservationId = resultSet.getLong("reservation_id");
+        String name = resultSet.getString("name");
+        String date = resultSet.getString("date");
+        Long timeId = resultSet.getLong("time_id");
+        String timeValue = resultSet.getString("time_value");
+
+        Time time = new Time(timeId, timeValue);
+        return new Reservation(reservationId, name, date, time);
+    };
 
     public List<Reservation> findAllReservations() {
-        String sql = "SELECT * FROM reservation";
+        String sql = "SELECT r.id as reservation_id, r.name, r.date, t.id as time_id, t.time as time_value " +
+                "FROM reservation as r INNER JOIN time as t ON r.time_id = t.id";
         return jdbcTemplate.query(sql, reservationRowMapper);
     }
 
     public Reservation findReservationById(Long id) {
-        String sql = "SELECT * FROM reservation WHERE id = ?";
+        String sql = "SELECT r.id as reservation_id, r.name, r.date, t.id as time_id, t.time as time_value " +
+                "FROM reservation as r INNER JOIN time as t ON r.time_id = t.id " +
+                "WHERE r.id = ?";
         try {
             return jdbcTemplate.queryForObject(sql, reservationRowMapper, id);
         } catch (EmptyResultDataAccessException e) {
@@ -43,14 +49,14 @@ public class QueryingDAO {
     }
 
     public Long createReservation(Reservation reservation) {
-        String sql = "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO reservation (name, date, time_id) VALUES (?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, reservation.getName());
             ps.setString(2, reservation.getDate());
-            ps.setString(3, reservation.getTime());
+            ps.setLong(3, reservation.getTime().getId());  // Set time_id
             return ps;
         }, keyHolder);
 

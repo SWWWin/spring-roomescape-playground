@@ -11,6 +11,10 @@ import java.util.List;
 @RequestMapping("/reservations")
 public class ReservationController {
 
+    public String reservation() {
+        return "new-reservation";
+    }
+
     @Autowired
     private QueryingDAO queryingDAO;
 
@@ -19,7 +23,7 @@ public class ReservationController {
         // Validate the request body
         if (request.getName() == null || request.getName().isBlank() ||
                 request.getDate() == null || request.getDate().isBlank() ||
-                request.getTime() == null || request.getTime().isBlank()) {
+                request.getTime() == null || request.getTime().getId() == null) {
             throw new IllegalArgumentException("데이터가 비어있습니다.");
         }
 
