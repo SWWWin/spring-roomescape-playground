@@ -1,0 +1,21 @@
+public void createReservation(Reservation reservation) {
+    try {
+        String sql = "INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)";
+        jdbcTemplate.update(sql, reservation.getName(), reservation.getDate(), reservation.getTime());
+        System.out.println("Reservation created successfully.");
+    } catch (Exception e) {
+        e.printStackTrace();  // 예외 발생 시 스택 트레이스 출력
+        throw new RuntimeException("Failed to create reservation", e);
+    }
+}
+
+public Long getLastInsertId() {
+    try {
+        String sql = "SELECT LAST_INSERT_ID()";
+        return jdbcTemplate.queryForObject(sql, Long.class);
+    } catch (Exception e) {
+        e.printStackTrace();  // 예외 발생 시 스택 트레이스 출력
+        throw new RuntimeException("Failed to retrieve last insert ID", e);
+    }
+}
+
