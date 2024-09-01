@@ -11,23 +11,30 @@ import java.util.List;
 @RequestMapping("/reservations")
 public class ReservationController {
 
-    public String reservation() {
-        return "new-reservation";
+    private final QueryingDAO queryingDAO;
+
+    // 생성자 주입 방식 사용
+    @Autowired
+    public ReservationController(QueryingDAO queryingDAO) {
+        this.queryingDAO = queryingDAO;
     }
 
-    @Autowired
-    private QueryingDAO queryingDAO;
+    // 만약 이 메소드가 "/reservation" 경로로 매핑된다면, 아래처럼 어노테이션 추가
+    @GetMapping("/reservation")
+    public ResponseEntity<String> reservation() {
+        return ResponseEntity.ok("new-reservation");
+    }
 
     @PostMapping
     public ResponseEntity<Reservation> create(@RequestBody Reservation request) {
-        // Validate the request body
+        // 요청 바디 검증
         if (request.getName() == null || request.getName().isBlank() ||
                 request.getDate() == null || request.getDate().isBlank() ||
                 request.getTime() == null || request.getTime().getId() == null) {
             throw new IllegalArgumentException("데이터가 비어있습니다.");
         }
 
-        // Create the reservation and get the new ID
+        // 예약 생성 및 ID 반환
         Long newId = queryingDAO.createReservation(request);
         Reservation newReservation = new Reservation(newId, request.getName(), request.getDate(), request.getTime());
 
@@ -66,3 +73,4 @@ public class ReservationController {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 }
+
